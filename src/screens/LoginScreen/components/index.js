@@ -1,11 +1,15 @@
 import * as React from 'react'
-import { SafeAreaView, View, Image, Dimensions, Switch, ScrollView } from 'react-native'
+import { useState } from 'react';
+import axios from 'axios';
+import { SafeAreaView,Text, View, Image, Dimensions, Switch, ScrollView } from 'react-native'
 import EmailIcon from '../../../assets/svg/EmailIcon'
 import SecureIcon from '../../../assets/svg/SecureIcon'
 import Button from '../../../component/Button'
 import InputText from '../../../component/InputText'
 import SimpleText from '../../../component/SimpleText'
 import { LoginPicture, LoginCircles } from '../../../constants/Images'
+  
+
 const LoginComponent = ({
     navigation,
     isEnabled,
@@ -17,6 +21,36 @@ const LoginComponent = ({
     setPassword
 }) => {
     const LoginDetail = () => {
+
+        const [email, setEmail] = useState('');
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+
+  const handleSubmit = () => {
+    const requestBody = {
+      email,
+      username,
+      password
+    };
+
+    axios.post('https://evaluationapi.riolabz.com/api/v1/auth/login', requestBody)
+      .then((response) => {
+        console.log(response.data);
+        Alert.alert('Alert Title', 'My Alert Msg', [
+            {
+              text: 'Cancel',
+              onPress: () => console.log('Cancel Pressed'),
+              style: 'cancel',
+            },
+            {text: 'OK', onPress: () => console.log('OK Pressed')},
+          ]);
+
+      })
+      .catch((error) => {
+        console.error(error);
+        () => navigation.navigate('InspectionScreen')
+      });
+  };
         return (
             <View style={{ alignItems: 'center', marginTop: 40 }}>
                 <SimpleText
@@ -88,7 +122,7 @@ const LoginComponent = ({
                     textColor={'black'}
                     title="Login"
                     borderRadius={12}
-                    onPress={() => navigation.navigate('InspectionScreen')}
+                    onPress={ () => navigation.navigate('InspectionScreen')}
                 />
 
             </View>)
